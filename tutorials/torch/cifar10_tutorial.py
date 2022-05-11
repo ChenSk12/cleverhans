@@ -42,10 +42,10 @@ def ld_cifar10():
         [torchvision.transforms.ToTensor()]
     )
     train_dataset = torchvision.datasets.CIFAR10(
-        root="../dataset", train=True, transform=train_transforms, download=True
+        root="D:/github/clone/dataset", train=True, transform=train_transforms, download=True
     )
     test_dataset = torchvision.datasets.CIFAR10(
-        root="../dataset", train=False, transform=test_transforms, download=True
+        root="D:/github/clone/dataset", train=False, transform=test_transforms, download=True
     )
     train_loader = torch.utils.data.DataLoader(
         train_dataset, batch_size=128, shuffle=True, num_workers=2
@@ -72,7 +72,7 @@ def main(_):
     net.train()
     for epoch in range(1, FLAGS.nb_epochs + 1):
         train_loss = 0.0
-        for x, y in data.train:
+        for x, y in enumerate(data.train):
             x, y = x.to(device), y.to(device)
             if FLAGS.adv_train:
                 # Replace clean example with adversarial example for adversarial training
@@ -91,7 +91,7 @@ def main(_):
     # Evaluate on clean and adversarial data
     net.eval()
     report = EasyDict(nb_test=0, correct=0, correct_fgm=0, correct_pgd=0)
-    for x, y in data.test:
+    for x, y in enumerate(data.test):
         x, y = x.to(device), y.to(device)
         x_fgm = fast_gradient_method(net, x, FLAGS.eps, np.inf)
         x_pgd = projected_gradient_descent(net, x, FLAGS.eps, 0.01, 40, np.inf)
@@ -127,7 +127,7 @@ if __name__ == "__main__":
     flags.DEFINE_integer("nb_epochs", 8, "Number of epochs.")
     flags.DEFINE_float("eps", 0.3, "Total epsilon for FGM and PGD attacks.")
     flags.DEFINE_bool(
-        "adv_train", False, "Use adversarial training (on PGD adversarial examples)."
+        "adv_train", True, "Use adversarial training (on PGD adversarial examples)."
     )
 
     app.run(main)

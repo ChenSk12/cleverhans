@@ -5,6 +5,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
+from tqdm import tqdm
 
 from cleverhans.torch.attacks.fast_gradient_method import fast_gradient_method
 from cleverhans.torch.attacks.projected_gradient_descent import (
@@ -72,7 +73,7 @@ def main(_):
     net.train()
     for epoch in range(1, FLAGS.nb_epochs + 1):
         train_loss = 0.0
-        for x, y in enumerate(data.train):
+        for x, y in tqdm(data.train):
             x, y = x.to(device), y.to(device)
             if FLAGS.adv_train:
                 # Replace clean example with adversarial example for adversarial training
@@ -91,7 +92,7 @@ def main(_):
     # Evaluate on clean and adversarial data
     net.eval()
     report = EasyDict(nb_test=0, correct=0, correct_fgm=0, correct_pgd=0)
-    for x, y in enumerate(data.test):
+    for x, y in tqdm(data.test):
         x, y = x.to(device), y.to(device)
         x_fgm = fast_gradient_method(net, x, FLAGS.eps, np.inf)
         x_pgd = projected_gradient_descent(net, x, FLAGS.eps, 0.01, 40, np.inf)

@@ -42,10 +42,10 @@ def ld_cifar10():
         [torchvision.transforms.ToTensor()]
     )
     train_dataset = torchvision.datasets.CIFAR10(
-        root="/tmp/data", train=True, transform=train_transforms, download=True
+        root="../dataset", train=True, transform=train_transforms, download=True
     )
     test_dataset = torchvision.datasets.CIFAR10(
-        root="/tmp/data", train=False, transform=test_transforms, download=True
+        root="../dataset", train=False, transform=test_transforms, download=True
     )
     train_loader = torch.utils.data.DataLoader(
         train_dataset, batch_size=128, shuffle=True, num_workers=2
